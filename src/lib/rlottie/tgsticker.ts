@@ -17,16 +17,14 @@ export function getLottiePixelRatio(
   needUpscale?: boolean
 ) {
   let pixelRatio = clamp(window.devicePixelRatio, 1, 2);
-  // console.log("Device pixel ratio:", pixelRatio);
+  
   if (pixelRatio > 1 && !needUpscale) {
     if (width > 90 && height > 90) {
       if (!IS_APPLE && mediaSizes.isMobile) {
         pixelRatio = 1;
-        // console.log("Mobile device detected, setting pixel ratio to 1");
       }
     } else if ((width > 60 && height > 60) || IS_ANDROID) {
       pixelRatio = Math.max(1.5, pixelRatio - 1.5);
-      // console.log("Setting pixel ratio to 1.5");
     }
   }
 
@@ -42,11 +40,6 @@ export const RLottie = (function () {
   let rlottieWorkers: QueryableWorker[] = [],
     curWorkerNum = 0,
     rlottieFrames = new Map<string, any>();
-
-  // let startTime = +new Date();
-  // function dT() {
-  //   return "[" + (+new Date() - startTime) / 1000.0 + "] ";
-  // }
 
   rlottie.Api = {};
   rlottie.players = Object.create(null);
@@ -188,12 +181,10 @@ export const RLottie = (function () {
             const rlottieWorker = (rlottieWorkers[workerNum] =
               new QueryableWorker("rlottie-wasm/rlottie-wasm.worker.js"));
             rlottieWorker.addListener("ready", function () {
-              // console.log(dT(), "worker #" + workerNum + " ready");
               rlottieWorker.addListener("frame", onFrame);
               rlottieWorker.addListener("loaded", onLoaded);
               --workersRemain;
               if (!workersRemain) {
-                // console.log(dT(), "workers ready");
                 apiInited = true;
                 for (let i = 0; i < initCallbacks.length; i++) {
                   initCallbacks[i]();
@@ -291,10 +282,8 @@ export const RLottie = (function () {
     for (let workerNum = 0; workerNum < rlottie.WORKERS_LIMIT; workerNum++) {
       if (rlottieWorkers[workerNum]) {
         rlottieWorkers[workerNum].terminate();
-        // console.log("worker #" + workerNum + " terminated");
       }
     }
-    // console.log("workers destroyed");
     apiInitStarted = apiInited = false;
     rlottieWorkers = [];
   }
@@ -454,7 +443,6 @@ export const RLottie = (function () {
       console.warn("URL not provided.");
       return false;
     }
-    // console.log("Initializing RLottie with URL:", url);
     initApi(function () {
       initPlayer(el, options, url);
     });
